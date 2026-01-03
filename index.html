@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>企业区域二维码</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<style>
+body {
+  background:#2f2f3f;
+  font-family: Arial;
+  text-align:center;
+  color:white;
+}
+.card {
+  background:white;
+  color:black;
+  padding:20px;
+  border-radius:12px;
+  display:inline-block;
+}
+.status {
+  color:green;
+  font-weight:bold;
+  margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h3>将二维码对准扫描器扫码进出场</h3>
+
+<div class="card">
+  <div id="time"></div>
+  <div id="qrcode"></div>
+  <div class="status">已生效</div>
+  <div id="countdown"></div>
+</div>
+
+<script>
+const EXPIRE_SECONDS = 00 * 00 * 00   // 12 tiếng
+
+const token = crypto.randomUUID()
+const expire = Math.floor(Date.now()/1000) + EXPIRE_SECONDS
+
+const qrText = `https://company-entry.github.io/scan?token=${token}&exp=${expire}`
+
+new QRCode(document.getElementById("qrcode"), {
+  text: qrText,
+  width: 240,
+  height: 240
+})
+
+let remain = EXPIRE_SECONDS
+setInterval(() => {
+  remain--
+  let h = Math.floor(remain / 3600)
+  let m = Math.floor((remain % 3600) / 60)
+  let s = remain % 60
+  document.getElementById("countdown").innerText =
+    `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`
+}, 1000)
+
+document.getElementById("time").innerText =
+  new Date().toLocaleString()
+</script>
+
+</body>
+</html>
